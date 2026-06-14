@@ -46,14 +46,25 @@ import SwipeableScreen from "../Screens/Components/Swipeable";
 import Tabs from "../Screens/Components/Tabs";
 import Tables from "../Screens/Components/Tables";
 import Toggles from "../Screens/Components/Toggles";
+import { useState, useEffect } from "react";
+import { getToken } from "../Utils/auth";
 
 const StackComponent = createStackNavigator();
 
 const StackNavigator = () => {
-
+  const [user, setUser] = useState(null);
   const theme = useTheme();
 
   const {colors} = theme;
+
+  useEffect(() => {
+      const loadUser = async () => {
+        const userData = await getToken();
+        console.log("Decoded Token:", userData);
+        setUser(userData);
+      };
+      loadUser();
+    }, []);
 
   return (
     <View style={{width:'100%', flex: 1 }}>
@@ -61,7 +72,7 @@ const StackNavigator = () => {
         <StatusBar backgroundColor={theme.dark ? colors.background : '#fff'} barStyle={"dark-content" } />
       }
       <StackComponent.Navigator
-        initialRouteName="Onboarding"
+        initialRouteName={user ? "DrawerNavigation" : "Onboarding"}
         screenOptions={{
           headerShown: false,
           cardStyle: { backgroundColor: "transparent",flex:1 },

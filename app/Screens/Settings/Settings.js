@@ -153,7 +153,7 @@ const Settings = (props) => {
                     <Text style={{...FONTS.fontLg,...FONTS.fontMedium,color:colors.title,flex:1}}>Dark Mode</Text>
                     <CustomToggle value={toggleBox}/>
                   </TouchableOpacity>
-                  <TouchableOpacity
+                  {/* <TouchableOpacity
                     style={{...styles.settingItem,backgroundColor:colors.bgLight,borderColor:colors.borderColor}}
                   >
                     <LinearGradient
@@ -169,8 +169,8 @@ const Settings = (props) => {
                       <Text style={{...FONTS.fontLg,...FONTS.fontMedium,color:colors.title}}>Dashboard</Text>
                     </View>
                     <SvgXml fill={colors.title} xml={ICONS.right}/>
-                  </TouchableOpacity>
-                  <TouchableOpacity
+                  </TouchableOpacity> */}
+                  {/* <TouchableOpacity
                     style={{...styles.settingItem,backgroundColor:colors.bgLight,borderColor:colors.borderColor}}
                     onPress={() => {setSettingRBSheet('email');refRBSheet.current.open()}}
                   >
@@ -236,7 +236,7 @@ const Settings = (props) => {
                     </LinearGradient>
                     <Text style={{...FONTS.fontLg,...FONTS.fontMedium,color:colors.title,flex:1}}>Scan QR Code</Text>
                     <SvgXml fill={colors.title} xml={ICONS.right}/>
-                  </TouchableOpacity>
+                  </TouchableOpacity> */}
 
                 </View>
 

@@ -14,6 +14,13 @@ export const COLORS = {
   light : "#E6E6E6",
   title : "#3A354F",
   text : "#93909D",
+  new:"#53ff7b",
+  inprogress: "#ffd453",
+  followup: "#dbff58",
+  site_visit_fixed: "#4cb1ff",
+  site_visit_done: "#00b782",
+  dead: "#ff6e7c",
+  closed: "#6F4FEF",
 }
 
 export const SIZES = {
@@ -178,6 +185,13 @@ export const IMAGES = {
   userPic2 : require('../assets/images/small/pic2.jpg'),
   userPic3 : require('../assets/images/small/pic3.jpg'),
   userPic4 : require('../assets/images/small/pic4.jpg'),
+  hmobile : require('../assets/images/home/home-mobile.png'),
+  hstar : require('../assets/images/home/home-star.png'),
+  hthumbsUp : require('../assets/images/home/home-thumbsUp.png'),
+  htransfer : require('../assets/images/home/home-transfer.png'),
+  htelegram : require('../assets/images/home/home-telegram.png'),
+  hfile : require('../assets/images/home/home-file.png'),
+  htrade : require('../assets/images/home/home-trade.png')
 }
 const appTheme = {COLORS, ICONS , IMAGES ,  SIZES, FONTS}
 

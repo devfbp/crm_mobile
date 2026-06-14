@@ -1,6 +1,7 @@
 import React from "react";
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import CustomTabBar from './CustomTabBar';
+import CustomTabBarBottom from './CustomTabBarBottom';
 import HomeScreen from "../Screens/Home/Home";
 import TradeScreen from "../Screens/Trade/Trade";
 import ProfileScreen from "../Screens/Profile/Profile";
@@ -15,7 +16,7 @@ const BottomNavigation = () => {
       
       <Tab.Navigator 
         initialRouteName="Home"
-        tabBar={props => <CustomTabBar {...props} />}
+        tabBar={props => <CustomTabBarBottom {...props} />}
         screenOptions={{
           headerShown: false,
           //lazy:false,
@@ -23,21 +24,21 @@ const BottomNavigation = () => {
       
       >
         <Tab.Screen 
-          name="Trade"
+          name="Leads"
           component={TradeScreen}
         />
-        <Tab.Screen
+        {/* <Tab.Screen
           name="Referral"
           component={ReferralScreen} 
-        />
+        /> */}
         <Tab.Screen 
           name="Home"
           component={HomeScreen}
         />
-        <Tab.Screen 
+        {/* <Tab.Screen 
           name="Wallet" 
           component={WalletScreen} 
-        />
+        /> */}
         <Tab.Screen
           name="Profile"
           component={ProfileScreen} 

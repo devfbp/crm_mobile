@@ -4,7 +4,7 @@ import { useTheme } from '@react-navigation/native';
 import { COLORS, FONTS, IMAGES, SIZES } from '../Utils/theme';
 import { GlobalStyleSheet } from '../Utils/styleSheet';
 
-const CustomTabBar = ({state,navigation,descriptors}) => {
+const CustomTabBarBottom = ({state,navigation,descriptors}) => {
     
     const {colors} = useTheme();
 
@@ -17,7 +17,7 @@ const CustomTabBar = ({state,navigation,descriptors}) => {
     ).current;
     
     const tabW =
-        tabWidth < SIZES.container ? tabWidth / 5 : (SIZES.container - 35) / 5;
+        tabWidth < SIZES.container ? tabWidth / 3 : (SIZES.container - 35) / 3;
 
     const onTabPress = (index) => {
         Animated.spring(circlePosition, {
@@ -63,7 +63,7 @@ const CustomTabBar = ({state,navigation,descriptors}) => {
                 >
                     <Animated.View style={{transform: [{translateX: circlePosition}]}}>
                         <View style={{
-                            width: tabWidth < SIZES.container ? tabWidth / 5 : SIZES.container / 5,
+                            width: tabWidth < SIZES.container ? tabWidth / 3 : SIZES.container / 3,
                             position:'absolute',
                             zIndex:1,
                             top: 0,
@@ -169,4 +169,4 @@ const styles = StyleSheet.create({
 })
 
 
-export default CustomTabBar;
+export default CustomTabBarBottom;

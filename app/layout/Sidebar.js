@@ -1,15 +1,26 @@
-import React from 'react';
+/*Sidebar.js*/
+import React, { useRef, useState, useEffect } from "react";
 import { Image, ImageBackground, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useNavigation, useTheme } from '@react-navigation/native';
 import { Feather } from '@expo/vector-icons';
 import { COLORS, FONTS, IMAGES } from '../Utils/theme';
 import ThemeBtn from '../components/ThemeBtn';
+import { getToken } from '../Utils/auth';
 
 function Sidebar() {
-
+    const [user, setUser] = useState(null);
     const navigation = useNavigation();
     const {colors} = useTheme();
 
+    useEffect(() => {
+        const loadUser = async () => {
+          const userData = await getToken();
+          console.log("Decoded Token:", userData);
+          setUser(userData);
+        };
+        loadUser();
+      }, []);
+      
     return (
         <View
             style={{
@@ -53,8 +64,8 @@ function Sidebar() {
                             <ThemeBtn/>
                         </View>
                     </View>
-                    <Text style={{...FONTS.h6,color:colors.title,marginBottom:3}}>Stas Bondarenko</Text>
-                    <Text style={{...FONTS.fontSm,color:colors.title,opacity:.7}}>example@gmail.com</Text>
+                    <Text style={{...FONTS.h6,color:colors.title,marginBottom:3}}>{user?.user_name || ""}</Text>
+                    <Text style={{...FONTS.fontSm,color:colors.title,opacity:.7}}>{user?.email || ""}</Text>
                 </View> 
                 :
 
@@ -94,8 +105,10 @@ function Sidebar() {
                             <ThemeBtn/>
                         </View>
                     </View>
-                    <Text style={{...FONTS.h6,color:COLORS.white,marginBottom:3}}>Stas Bondarenko</Text>
-                    <Text style={{...FONTS.fontSm,color:COLORS.white,opacity:.7}}>example@gmail.com</Text>
+                    <Text style={{...FONTS.h6,color:COLORS.white,marginBottom:3}}>{user?.user_name || ""}</Text>
+                    <Text style={{...FONTS.fontSm,color:COLORS.white,opacity:.7}}>{user?.email || ""}</Text>
+                    <Text style={{...FONTS.fontSm,color:COLORS.white,opacity:.7}}>{user?.role_name || ""}</Text>
+                    
                 </ImageBackground>
             }
             <View style={{flex:1,paddingVertical:15}}>
@@ -117,14 +130,6 @@ function Sidebar() {
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={styles.navItem}
-                    onPress={() => navigation.navigate('Components')}
-                >
-                    <Feather  style={{marginRight:12}} color={colors.text} size={18} name='grid'/>
-                    <Text style={{...FONTS.font,...FONTS.fontSemiBold,color:colors.title,flex:1}}>Components</Text>
-                    <Feather  size={16} color={colors.text} name={'chevron-right'}/>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={styles.navItem}
                     onPress={() => navigation.navigate('Settings')}
                 >
                     <Image
@@ -139,6 +144,15 @@ function Sidebar() {
                     <Text style={{...FONTS.font,...FONTS.fontSemiBold,color:colors.title,flex:1}}>Settings</Text>
                     <Feather  size={16} color={colors.text} name={'chevron-right'}/>
                 </TouchableOpacity>
+                {/* <TouchableOpacity
+                    style={styles.navItem}
+                    onPress={() => navigation.navigate('Components')}
+                >
+                    <Feather  style={{marginRight:12}} color={colors.text} size={18} name='grid'/>
+                    <Text style={{...FONTS.font,...FONTS.fontSemiBold,color:colors.title,flex:1}}>Components</Text>
+                    <Feather  size={16} color={colors.text} name={'chevron-right'}/>
+                </TouchableOpacity>
+                
                 <TouchableOpacity
                     style={styles.navItem}
                     onPress={() => navigation.navigate('History')}
@@ -154,7 +168,7 @@ function Sidebar() {
                     />
                     <Text style={{...FONTS.font,...FONTS.fontSemiBold,color:colors.title,flex:1}}>History</Text>
                     <Feather  size={16} color={colors.text} name={'chevron-right'}/>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
                 <TouchableOpacity
                     style={styles.navItem}
                     onPress={() => navigation.navigate('Onboarding')}
@@ -178,8 +192,8 @@ function Sidebar() {
                     paddingVertical:20,
                 }}
             >
-                <Text style={{...FONTS.h6,color:colors.title,marginBottom:5}}>Crypto - Mobile Template</Text>
-                <Text style={{...FONTS.font,color:colors.text}}>App Version 2.0</Text>
+                <Text style={{...FONTS.h6,color:colors.title,marginBottom:5}}>{process.env.EXPO_PUBLIC_APP_NAME}</Text>
+                <Text style={{...FONTS.font,color:colors.text}}>App Version {process.env.EXPO_PUBLIC_API_VERSION}</Text>
             </View>
         </View>
     );

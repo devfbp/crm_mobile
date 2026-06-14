@@ -34,7 +34,7 @@ const BannerCard = (props) => {
             }}>
                 <Text style={{...FONTS.fontSm,color:'#fff',opacity:.7,marginBottom:4}}>{props.subTitle}</Text>
                 <Text style={{...FONTS.h5,color:COLORS.white,marginBottom:10}}>{props.title}</Text>
-                <TouchableOpacity
+                {/* <TouchableOpacity
                     style={{
                         backgroundColor:COLORS.white,
                         borderRadius:6,
@@ -43,7 +43,7 @@ const BannerCard = (props) => {
                     }}
                 >
                     <Text style={{...FONTS.fontSm,...FONTS.fontMedium,color:COLORS.primary}}>Trade Now</Text>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
             </View>
         </LinearGradient>
     </View>
