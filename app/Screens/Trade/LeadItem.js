@@ -28,57 +28,11 @@ export default function Due(props) {
         fetchFilteredData(filters, pageNumber, dataPerPage);
     };
     const navigation = useNavigation();
-    // const getLeadData = async () => {
-    //     let url = `${process.env.EXPO_PUBLIC_API_URL}lead?view=1`;
-    //     let filterValue = 1;
-    //     if (props.filter == 1) {
-    //         filterValue = 0;
-    //     } else if (props.filter == 2) {
-    //         filterValue = 2;
-    //     }
-    //     url += `&filter=${filterValue}`;
-    //     console.log("Fetching data from URL:", url);
-    //     setLoading(true);
-    //     try {
-
-    //         const response = await fetch(url, {
-    //             method: 'GET',
-    //             headers: {
-    //                 'Content-Type': 'application/json',
-    //             }
-    //         });
-    //         // Parse response only once
-    //         const data = await response.json();
-    //         let updatedListData = [];
-    //         if (data?.data) {
-    //             updatedListData = data.data.map((item, index) => ({
-    //                 id: item?.lead_id,
-    //                 customer_name: item?.customer_name,
-    //                 mobile_no: item?.mobile_no,
-    //                 project_name: item?.project_name,
-    //                 assigned_to: item?.assigned_to,
-    //                 status: item?.status,
-    //                 status_color: item?.status_color,
-    //                 sub_source_name: item?.sub_source_name,
-    //             }));
-    //         }
-    //         // console.log("Fetched List Data:", updatedListData);
-    //         setOrderData2(updatedListData);
-    //         // console.log("Updated OrderData2:", updatedListData);
-    //     } catch (error) {
-    //         console.error('Login Error:', error);
-    //     } finally {
-    //         setLoading(false);
-    //     }
-    // };
     const getLeadData = async (filters, pageNumber, dataPerPage=100) => {
         try {
             console.log("Filters", filters);
             setLoading(true);
             const searchTerm = await AsyncStorage.getItem("lead_search");
-            const assignedTo = await AsyncStorage.getItem("lead_assigned_to");
-            const tagValue = await AsyncStorage.getItem("lead_tag");
-            const statusValue = await AsyncStorage.getItem("lead_status_id");
             const url = `${process.env.EXPO_PUBLIC_API_URL_WEB}lead/view`;
 
             await AsyncStorage.setItem("lead_page", "1");

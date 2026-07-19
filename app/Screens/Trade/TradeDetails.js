@@ -205,7 +205,7 @@ const LeadDetails = (props) => {
                                         <View style={{ flex: 1, marginLeft: 5 }}>
                                             <CustomButton title={'Email'} btnSm color="#1da1f2"
                                                 onPress={() => {
-                                                    if (!dataset.email) return;
+                                                    // if (!dataset.email) return;
                                                     Linking.openURL(`mailto:${dataset.email}`);
                                                 }}
                                             />
@@ -236,42 +236,16 @@ const LeadDetails = (props) => {
                                 </View>
                             </View>
                         </View>
-
-                    </ScrollView>
-                    <View
-                        style={{
-                            flexDirection: "row",
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                            paddingHorizontal: 15,
-                            paddingVertical: 10,
-                        }}
-                    >
-                        <Text
-                            style={{
-                                ...FONTS.h4,
-                                ...FONTS.fontMedium,
-                                color: COLORS.white,
-                            }}
-                        >
-                            History
-                        </Text>
-
-                        <View style={{ width: 100 }}>
-                            <CustomButton
-                                title="Post"
-                                btnSm
-                                color={COLORS.secondary}
-                            />
-                        </View>
-                    </View>
-
-                    <ScrollView style={{ height: '100%' }} contentContainerStyle={{ flexGrow: 1 }}>
-
-                        <LeadItemHistory leadId={leadId} />
                     </ScrollView>
 
-
+                </View>
+                <View
+                    style={{
+                        flex: 1,
+                        backgroundColor: colors.ThemeBg,
+                    }}
+                >
+                    <LeadItemHistory leadId={leadId} />
                 </View>
             </SafeAreaView>
         </>
