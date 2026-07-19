@@ -20,7 +20,7 @@ import FutureTrade from "../../components/BottomSheet/FutureTrade";
 import RadioForm, { RadioButton, RadioButtonInput, RadioButtonLabel } from "react-native-simple-radio-button";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import Due from "./Due";
+import Due from "./LeadItem";
 const OrderData = [
     {
         price : "0.6188",

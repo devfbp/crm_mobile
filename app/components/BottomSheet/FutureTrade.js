@@ -1,165 +1,153 @@
-import React, { useState } from 'react';
+import React, { use, useState, useRef, useEffect  } from 'react';
 import { useTheme } from '@react-navigation/native';
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { GlobalStyleSheet } from '../../Utils/styleSheet';
 import CustomSelectBox from '../CustomSelectBox';
 import { COLORS, FONTS, SIZES } from '../../Utils/theme';
 import MultiSlider from '@ptomasroos/react-native-multi-slider';
+import CustomButton from "../../components/CustomButton";
+import { getStatus, getTags } from '../../Utils/common';
+import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const FutureTrade = () => {
-
-    const [itemValue , setItemValue] = useState('');
-    const [activeTab , setActiveTab] = useState('Short');
-    const [isFocused , setisFocused] = useState(false);
-    const [isFocused2 , setisFocused2] = useState(false);
-    const [isFocused3 , setisFocused3] = useState(false);
+const FutureTrade = (props) => {
     const { colors } = useTheme();
+    const [keyword, setKeyword] = useState('');
+    const [tagValue, setTagValue] = useState('');
+    const [statusValue, setStatusValue] = useState('');
+    const [isFocused, setIsFocused] = useState(false);
 
+    const fetchFilteredData = async () => {
+        // Implement the logic to fetch filtered data based on keyword, tagValue, and statusValue
+        // console.log('Fetching filtered data with:', { keyword, tagValue, statusValue });
+        props.setFilter({ keyword, tagValue, statusValue });
+    }
+
+    const handleTagChange = async (value) => {
+        const selectedTag = getTags().find((item) => item.label === value);
+        if (selectedTag) {
+            setTagValue(selectedTag.value);
+            await AsyncStorage.setItem("tag_title", value);
+        }
+    }
+    const handleStatusChange = async (value) => {
+        const selectedStatus = getStatus().find((item) => item.label === value);
+        if (selectedStatus) {
+            setStatusValue(selectedStatus.value);
+            await AsyncStorage.setItem("status_title", value);
+        }
+    }
+    useEffect(() => {
+        setKeyword(props.filter.keyword || '');
+        setTagValue(props.filter.tagValue || '');
+        setStatusValue(props.filter.statusValue || '');
+    }, [props.filter]);
+
+    const handleReset = () => {
+        setKeyword('');
+        setTagValue('');
+        setStatusValue('');
+        props.setFilter({ keyword: '', tagValue: '', statusValue: '' });
+        try {
+            AsyncStorage.removeItem("tag_title");
+            AsyncStorage.removeItem("status_title");
+            AsyncStorage.removeItem("lead_tag");
+            AsyncStorage.removeItem("lead_search");
+            AsyncStorage.removeItem("lead_assigned_to");
+            AsyncStorage.removeItem("lead_status_id");
+
+        } catch (error) {
+            console.error('Error clearing AsyncStorage:', error);
+        }
+    }
     return (
-        <View style={{...GlobalStyleSheet.container}}>
-            <View style={{marginBottom:18}}>
-                <CustomSelectBox
-                    selectItems={['Profit & Loss' , 'Response']}
-                    defaultValue={'Profit & Loss'}
-                    value={itemValue}
-                    setValue={setItemValue}
-                />
-            </View>
-            <View style={{flexDirection:'row',marginHorizontal:-5,marginBottom:20}}>
-                <View style={{flex:1,paddingHorizontal:5}}>
-                    <TouchableOpacity
-                        onPress={()=> setActiveTab('Long')}
-                        style={[styles.tabBtn,{backgroundColor:'rgba(111,79,239,.2)'},activeTab === "Long" && {backgroundColor:COLORS.primary}]}
-                    >
-                        <Text style={[{...FONTS.fontLg,...FONTS.fontMedium,color:COLORS.primary},activeTab === "Long" && {color:COLORS.white}]}>LONG</Text>
-                    </TouchableOpacity>
-                </View>
-                <View style={{flex:1,paddingHorizontal:5}}>
-                    <TouchableOpacity
-                        onPress={()=> setActiveTab('Short')}
-                        style={[styles.tabBtn,{backgroundColor:'rgba(235,87,87,.1)'},activeTab === "Short" && {backgroundColor:COLORS.danger}]}
-                        >
-                        <Text style={[{...FONTS.fontLg,...FONTS.fontMedium,color:COLORS.danger},activeTab === "Short" && {color:COLORS.white}]}>SHORT</Text>
-                    </TouchableOpacity>
+        <View style={{ ...GlobalStyleSheet.container }}>
+            <View
+                style={[GlobalStyleSheet.container, {
+                    padding: 0,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    backgroundColor: colors.bgLight,
+                    paddingVertical: 8,
+                    paddingRight: 10,
+                    shadowColor: "rgba(0,0,0,.6)",
+                    shadowOffset: {
+                        width: 0,
+                        height: 5,
+                    },
+                    shadowOpacity: 0.34,
+                    shadowRadius: 6.27,
+                    elevation: 10,
+                }]}
+            >
+                <View style={{ flex: 1, paddingLeft: 0 }}>
+                    <Text style={{ ...FONTS.h6, color: colors.text, marginBottom: 2 }}>Search Leads</Text>
                 </View>
             </View>
-
-            <View style={{marginBottom:18}}>
+            <View style={{ marginBottom: 18 }}>
                 <TextInput
                     style={[{
                         ...GlobalStyleSheet.formControl,
-                        backgroundColor:colors.background,
-                        color:colors.title,
-                        borderColor:colors.borderColor,
-                    },isFocused && styles.inputActive]}
-                    placeholder="Quantity"
+                        backgroundColor: colors.background,
+                        color: colors.title,
+                        borderColor: colors.borderColor,
+                    }, isFocused && styles.inputActive]}
+                    placeholder="Enter Name/Phone Number"
                     placeholderTextColor={colors.text}
-                    onFocus={() => setisFocused(true)}
-                    onBlur={() => setisFocused(false)}
-                />  
-            </View>
-            
-            <View style={{flexDirection:'row',justifyContent:'space-between'}}>
-                <View style={{marginBottom:18,flex:1,marginRight:10}}>
-                    <TextInput
-                        style={[{
-                            ...GlobalStyleSheet.formControl,
-                            backgroundColor:colors.background,
-                            color:colors.title,
-                            borderColor:colors.borderColor,
-                        },isFocused2 && styles.inputActive]}
-                        placeholder="Entry Price"
-                        placeholderTextColor={colors.text}
-                        onFocus={() => setisFocused2(true)}
-                        onBlur={() => setisFocused2(false)}
-                    />  
-                </View>
-                <View style={{marginBottom:18,flex:1,marginLeft:10}}>
-                    <TextInput
-                        style={[{
-                            ...GlobalStyleSheet.formControl,
-                            backgroundColor:colors.background,
-                            color:colors.title,
-                            borderColor:colors.borderColor,
-                        },isFocused3 && styles.inputActive]}
-                        placeholder="Exit Price"
-                        placeholderTextColor={colors.text}
-                        onFocus={() => setisFocused3(true)}
-                        onBlur={() => setisFocused3(false)}
-                    />  
-                </View>
-            </View>
-
-            <View style={{marginBottom:20,marginTop:-10}}>
-                <MultiSlider
-                    enableLabel
-                    customLabel={() => 
-                        <View style={{
-                            flexDirection:'row',
-                            justifyContent:'space-between',
-                            position:'absolute',
-                            bottom:-4,
-                            width:'100%',
-                        }}>
-                            <Text style={{...FONTS.fontSm,color:colors.text}}>0%</Text>
-                            <Text style={{...FONTS.fontSm,color:colors.text}}>25%</Text>
-                            <Text style={{...FONTS.fontSm,color:colors.text}}>50%</Text>
-                            <Text style={{...FONTS.fontSm,color:colors.text}}>75%</Text>
-                            <Text style={{...FONTS.fontSm,color:colors.text}}>100%</Text>
-                        </View>
-                    }
-                    trackStyle={{height:4,borderRadius:2,backgroundColor:'rgba(142,165,200,.3)'}}
-                    selectedStyle={{
-                        backgroundColor:COLORS.primary,
-                    }}
-                    markerStyle={{
-                        backgroundColor:COLORS.primary,
-                        top:1,
-                        height:16,
-                        width:16,
-                        borderWidth:3,
-                        borderColor:COLORS.primary,
-                    }}
-                    sliderLength={SIZES.width - 30 > SIZES.container ? SIZES.container - 30 : SIZES.width - 30}
-                    max={100}
+                    onFocus={() => setIsFocused(true)}
+                    onBlur={() => setIsFocused(false)}
+                    value={keyword}
+                    onChangeText={setKeyword}
                 />
             </View>
-
-            <View style={{
-                borderTopWidth:1,
-                borderColor:colors.borderColor,
-                paddingTop:10,
-            }}>
-                <View style={{flexDirection:'row',justifyContent:'space-between',marginBottom:2}}>
-                    <Text style={{...FONTS.fontSm,color:colors.text}}>Initial margin</Text>
-                    <Text style={{...FONTS.fontSm,color:colors.title}}>0 USDT</Text>
+            <View style={{ marginBottom: 18 }}>
+                <CustomSelectBox
+                    selectItems={getTags().map((item) => item.label)}
+                    defaultValue="All Tags"
+                    value={
+                        getTags().find((item) => item.value === tagValue)?.label || "All Tags"
+                    }
+                    setValue={handleTagChange}
+                />
+            </View>
+            <View style={{ marginBottom: 18 }}>
+                <CustomSelectBox
+                    selectItems={getStatus().map((item) => item.label)}
+                    defaultValue={'All Status'}
+                    value={
+                        getStatus().find((item) => item.value === statusValue)?.label || "All Status"
+                    }
+                    setValue={handleStatusChange}
+                />
+            </View>
+            <View style={{ marginBottom: 18 }} flexDirection={'row'} justifyContent={'space-between'}>
+                <View style={{ flex: 1, marginRight: 5 }}>
+                    <CustomButton title={'Reset'} onPress={() => {
+                        handleReset();
+                    }} />
                 </View>
-                <View style={{flexDirection:'row',justifyContent:'space-between',marginBottom:2}}>
-                    <Text style={{...FONTS.fontSm,color:colors.text}}>PNL</Text>
-                    <Text style={{...FONTS.fontSm,color:colors.title}}>0 USDT</Text>
-                </View>
-                <View style={{flexDirection:'row',justifyContent:'space-between'}}>
-                    <Text style={{...FONTS.fontSm,color:colors.text}}>Profit/Loss %</Text>
-                    <Text style={{...FONTS.fontSm,color:colors.title}}>0 %</Text>
+                <View style={{ flex: 1, marginLeft: 5 }}>
+                    <CustomButton title={'Search'} onPress={() => {
+                        fetchFilteredData();
+                    }} />
                 </View>
             </View>
-
         </View>
     );
 };
 
 
 const styles = StyleSheet.create({
-    tabBtn:{
-        height:48,
-        borderRadius:30,
-        alignItems:'center',
-        justifyContent:'center',
-        paddingHorizontal:15,
-        paddingVertical:8,
+    tabBtn: {
+        height: 48,
+        borderRadius: 30,
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingHorizontal: 15,
+        paddingVertical: 8,
     },
-    inputActive:{
-        borderColor:COLORS.primary,
+    inputActive: {
+        borderColor: COLORS.primary,
     },
 })
 

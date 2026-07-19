@@ -3,10 +3,14 @@ export default {
     name: "FBP",
     slug: "FBP",
 
+    plugins: [
+      "expo-secure-store",
+    ],
+
     android: {
       package: "com.fullbasketproperty.fbp"
     },
-
+    
     extra: {
       BASE_URL: process.env.BASE_URL,
       API_URL: process.env.API_URL,

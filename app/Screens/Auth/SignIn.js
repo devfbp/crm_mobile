@@ -32,7 +32,7 @@ const SignIn = (props) => {
   const [username, setUsername] = useState('nithy.snt@gmail.com');
   const [password, setPassword] = useState('livecrm');
   const [loading, setLoading] = useState(false);
-  const url = `${process.env.EXPO_PUBLIC_API_URL}login/`;
+  const url = `${process.env.EXPO_PUBLIC_API_URL}login`;
   console.log('Login URL:', url);
 
   const handleLogin = async () => {
@@ -59,7 +59,7 @@ const SignIn = (props) => {
           password,
         }),
       });
-
+      console.log('Login Response:', response);
       console.log('Login Response Status:', response.status);
 
       // Parse response only once
