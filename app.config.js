@@ -5,6 +5,7 @@ export default {
 
     plugins: [
       "expo-secure-store",
+      "@react-native-community/datetimepicker"
     ],
 
     android: {

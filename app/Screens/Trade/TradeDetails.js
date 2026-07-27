@@ -18,6 +18,7 @@ import { SvgXml } from "react-native-svg";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { showDateNa } from "../../Utils/common";
 import LeadItemHistory from "./LeadItemHistory";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const { width } = Dimensions.get('window');
 
@@ -29,7 +30,8 @@ const LeadDetails = (props) => {
     const navigation = useNavigation();
     const route = useRoute();
     const [dataset, setDataset] = useState({});
-    const leadId = route.params?.leadId || null;
+    const [leadId, setLeadId] = useState(route.params?.leadId || props.leadId || null);
+    const [title, setTitle] = useState("Lead History");
 
     const getLeadData = async () => {
         if (!leadId) {
@@ -37,7 +39,7 @@ const LeadDetails = (props) => {
             return;
         }
         const url = `${process.env.EXPO_PUBLIC_API_URL}lead?id=${leadId}`;
-        console.log("Fetching data from URL:", url);
+        // console.log("Fetching data from URL:", url);
         setLoading(true);
         try {
             const response = await fetch(url, {
@@ -68,8 +70,59 @@ const LeadDetails = (props) => {
         getLeadData();
     }, [props.filter, leadId]);
 
+    useEffect(() => {
+        console.log(props.filter);
+        getLeadData();
+    }, [leadId]);
+
+    useEffect(() => {
+        if (title) {
+            // console.log(props.filter);
+            console.log("Refreshing lead data...");
+            getLeadData();
+            setTitle("Lead History"); // Reset the title after fetching data
+        }
+    }, [title]);
+
+    const loadDetails = async (direction) => {
+        try {
+            const raw = await AsyncStorage.getItem("preNextLeadId");
+            console.log("Stored lead IDs:", raw);
+            // console.log("Current lead ID:", leadId);
+            if (!raw) {
+                console.error('No lead list found in storage');
+                return;
+            }
+
+            const leadIds = JSON.parse(raw); // e.g. [15486, 15497, 15498, ...]
+
+            const currentIndex = leadIds.indexOf(Number(leadId));
+            if (currentIndex === -1) {
+                console.error('Current lead not found in stored list');
+                return;
+            }
+
+            const newIndex = direction === 1 ? currentIndex + 1 : currentIndex - 1;
+
+            if (newIndex < 0 || newIndex >= leadIds.length) {
+                console.log(`No ${direction} lead available`);
+                return; // at the start/end of the list — disable button or show a toast
+            }
+
+            const nextLeadId = leadIds[newIndex];
+            setLeadId(nextLeadId);
+        } catch (error) {
+            console.error('Error loading next/previous lead:', error);
+        }
+    };
+
     return (
         <>
+            {loading && (
+                <View style={{ padding: 20 }}>
+                    <Text style={{ ...FONTS.font, color: colors.text }}>Loading...</Text>
+                </View>
+            )}
             <SafeAreaView
                 style={{
                     flex: 1,
@@ -95,20 +148,20 @@ const LeadDetails = (props) => {
                                 height: null,
                                 flex: 1,
                                 padding: 0,
-                                paddingHorizontal: 15,
-                                paddingVertical: 15,
+                                paddingHorizontal: 5,
+                                paddingVertical: 5,
                                 borderBottomLeftRadius: 20,
                                 borderBottomRightRadius: 20,
                                 overflow: 'hidden',
                                 flexDirection: 'row',
                             }]}
                         >
-                            <View>
-                                <Text style={{ ...FONTS.h3, color: COLORS.white, marginBottom: 8, marginTop: 4 }}>{dataset?.customer_name}</Text>
-                                <Text style={{ ...FONTS.h4, ...FONTS.fontSemiBold, color: COLORS.white, marginBottom: 1 }}>{dataset?.mobile_no}</Text>
+                            <View style={{ flex: 1, alignItems: 'flex-start', marginLeft: 10 }}>
+                                <Text style={{ ...FONTS.h4, color: COLORS.white, marginBottom: 8, marginTop: 2 }}>{dataset?.customer_name}</Text>
+                                <Text style={{ ...FONTS.h5, ...FONTS.fontSemiBold, color: COLORS.white, marginBottom: 1 }}>{dataset?.mobile_no}</Text>
                                 <Text style={{ ...FONTS.fontSm, ...FONTS.fontSemiBold, color: COLORS.white }}>{dataset?.email}</Text>
                             </View>
-                            <View style={{ flex: 2, alignItems: 'flex-end' }}>
+                            <View style={{ flex: 1, alignItems: 'flex-end', marginRight: 10 }}>
                                 <Text style={{ ...FONTS.fontSm, ...FONTS.fontMedium, color: 'rgba(255,255,255,.7)' }}>Status</Text>
                                 <Text style={{ ...FONTS.fontSm, fontSize: 18, color: COLORS[dataset.status_color] || colors.title }}>{dataset.status}</Text>
                                 <Text style={{ ...FONTS.fontSm, fontSize: 12, color: theme.dark ? COLORS.white : '#468069' }}>Schedule Date</Text>
@@ -180,30 +233,16 @@ const LeadDetails = (props) => {
                                             />
                                             <Text style={{ ...FONTS.fontSm, fontSize: 15, color: theme.dark ? COLORS.white : '#468069' }}>Assigned To</Text>
                                             <Text style={{ ...FONTS.fontSm, fontSize: 15, color: colors.title }}>{dataset.assigned_to}</Text>
-                                        </View>
-                                        <View
-                                            key={6}
-                                            style={{
-                                                height: 22,
-                                                flexDirection: 'row',
-                                                justifyContent: 'space-between',
-                                                alignItems: 'center',
-                                            }}
-                                        >
-                                            <View
-                                                style={{
-                                                    width: "100%",
-                                                    backgroundColor: theme.dark ? 'rgba(103,196,128,.1)' : '#CBFFD9',
-                                                    height: '100%',
-                                                    position: 'absolute',
-                                                }}
-                                            />
-                                        </View>
+                                        </View>                                       
+                                        
+                                        
 
                                     </View>
                                     <View style={{ marginBottom: 18, flexDirection: 'row', justifyContent: 'space-between' }}>
                                         <View style={{ flex: 1, marginLeft: 5 }}>
                                             <CustomButton title={'Email'} btnSm color="#1da1f2"
+                                                fontSize={4}
+                                                btnH={40}
                                                 onPress={() => {
                                                     // if (!dataset.email) return;
                                                     Linking.openURL(`mailto:${dataset.email}`);
@@ -212,6 +251,8 @@ const LeadDetails = (props) => {
                                         </View>
                                         <View style={{ flex: 1, marginLeft: 5 }}>
                                             <CustomButton title={'Call'} btnSm color="#3d1df2"
+                                                fontSize={4}
+                                                btnH={40}
                                                 onPress={() => {
                                                     if (!dataset.mobile_no) return;
                                                     const phoneNumber = Platform.OS === 'android'
@@ -223,6 +264,8 @@ const LeadDetails = (props) => {
                                         </View>
                                         <View style={{ flex: 1, marginLeft: 5 }}>
                                             <CustomButton title={'Whatsapp'} btnSm color="#25D366"
+                                                fontSize={4}
+                                                btnH={40}
                                                 onPress={() => {
                                                     if (!dataset.mobile_no) return;
                                                     const url = `whatsapp://send?phone=${dataset.mobile_no}`;
@@ -233,6 +276,7 @@ const LeadDetails = (props) => {
                                             />
                                         </View>
                                     </View>
+
                                 </View>
                             </View>
                         </View>
@@ -245,7 +289,30 @@ const LeadDetails = (props) => {
                         backgroundColor: colors.ThemeBg,
                     }}
                 >
-                    <LeadItemHistory leadId={leadId} />
+                    <LeadItemHistory 
+                        row={leadId} 
+                        leadId={leadId} 
+                        title={title} 
+                        setTitle={setTitle}
+                    />
+                </View>
+                <View style={{ marginBottom: 18, flexDirection: 'row', justifyContent: 'space-between' }}>
+                    <View style={{ flex: 1, marginLeft: 5 }}>
+                        <CustomButton title={'<< Previous'} btnSm color="#1da1f2"
+                            fontSize={4}
+                            btnH={40}
+                            onPress={() => loadDetails(0)}
+                        />
+                    </View>
+
+                    <View style={{ flex: 1, marginLeft: 5 }}>
+                        <CustomButton title={'Next >>'} btnSm color={COLORS.success}
+                            fontSize={4}
+                            btnH={40}
+                            onPress={() => loadDetails(1)}
+                        />
+                    </View>
+
                 </View>
             </SafeAreaView>
         </>

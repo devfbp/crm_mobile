@@ -10,7 +10,7 @@ import {
   PermissionsAndroid,
   Platform,
 } from "react-native";
-import { useTheme } from '@react-navigation/native';
+import { useTheme, useNavigation } from '@react-navigation/native';
 import Header from "../../layout/header";
 import { GlobalStyleSheet } from "../../Utils/styleSheet";
 import { COLORS, FONTS, IMAGES, ICONS } from "../../Utils/theme";
@@ -19,10 +19,13 @@ import { launchImageLibrary } from 'react-native-image-picker';
 import RBSheet from "react-native-raw-bottom-sheet";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { getToken } from "../../Utils/auth";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 const Language = ["English", "Ukrainian", "Urdu"];
 
 const ProfileScreen = (props) => {
+  const navigation = useNavigation();
   const [user, setUser] = useState(null);
   const [activeItem, setActiveItem] = useState(Language[0]);
   const [imgUrl, setImgUrl] = useState(null);
@@ -37,6 +40,14 @@ const ProfileScreen = (props) => {
     };
     loadUser();
   }, []);
+  const LogoutUser = async () => {
+    try {
+      await AsyncStorage.removeItem('userToken');
+      navigation.navigate('Onboarding'); // Navigate to the Onboarding screen after logout
+    } catch (error) {
+      console.error('Error logging out:', error);
+    }
+  };
 
   const handleProfileImage = async () => {
     if (Platform.OS === 'ios') {
@@ -362,7 +373,7 @@ const ProfileScreen = (props) => {
                 <Text style={{ ...FONTS.fontLg, ...FONTS.fontMedium, color: COLORS.primary }}>{activeItem}</Text>
               </TouchableOpacity> */}
               <TouchableOpacity
-                onPress={() => props.navigation.navigate('Onboarding')}
+                onPress={LogoutUser}
                 style={[styles.listItem, { borderColor: colors.borderColor }]}
               >
                 <Image

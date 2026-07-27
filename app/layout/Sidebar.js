@@ -5,7 +5,8 @@ import { useNavigation, useTheme } from '@react-navigation/native';
 import { Feather } from '@expo/vector-icons';
 import { COLORS, FONTS, IMAGES } from '../Utils/theme';
 import ThemeBtn from '../components/ThemeBtn';
-import { getToken } from '../Utils/auth';
+import { getToken  } from '../Utils/auth';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function Sidebar() {
     const [user, setUser] = useState(null);
@@ -15,11 +16,20 @@ function Sidebar() {
     useEffect(() => {
         const loadUser = async () => {
           const userData = await getToken();
-          console.log("Decoded Token:", userData);
+            //console.log("Decoded Token:", userData);
           setUser(userData);
         };
         loadUser();
       }, []);
+
+    const LogoutUser = async () => {
+        try {
+            await AsyncStorage.removeItem('userToken');
+            navigation.navigate('Onboarding'); // Navigate to the Onboarding screen after logout
+        } catch (error) {
+            console.error('Error logging out:', error);
+        }
+    };
       
     return (
         <View
@@ -171,7 +181,7 @@ function Sidebar() {
                 </TouchableOpacity> */}
                 <TouchableOpacity
                     style={styles.navItem}
-                    onPress={() => navigation.navigate('Onboarding')}
+                    onPress={LogoutUser}
                 >
                     <Image
                         source={IMAGES.logout}

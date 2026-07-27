@@ -56,10 +56,14 @@ export default function Due(props) {
                 body.search = searchTerm;
                 await AsyncStorage.setItem("lead_search", searchTerm.toString());
             }
+            if (filters.rmuser) {
+                body.rmuser = filters.rmuser;
+                await AsyncStorage.setItem("lead_rmuser", filters.rmuser.toString());
+            }
 
-            if (filters.assigned_to) {
-                body.assigned_to = filters.assigned_to;
-                await AsyncStorage.setItem("lead_assigned_to", filters.assigned_to.toString());
+            if (filters.rmuserId) {
+                body.assigned_to = filters.rmuserId;
+                await AsyncStorage.setItem("lead_assigned_to", filters.rmuserId.toString());
             }
 
             if (filters.statusValue && filters.statusValue > 0) {
@@ -67,7 +71,7 @@ export default function Due(props) {
                 await AsyncStorage.setItem("lead_status_id", filters.statusValue.toString());
             }
             if (loading) return;
-            console.log("Fetching data with filters:", url, "-", body);
+            // console.log("Fetching data with filters:", url, "-", body);
             const response = await fetch(url, {
                 method: "POST",
                 headers: {
@@ -89,7 +93,13 @@ export default function Due(props) {
                     status: item?.status,
                     status_color: item?.status_color,
                     sub_source_name: item?.sub_source_name,
+                    schedule_date: item?.schedule_date,
                 }));
+            }
+            let preNextLeadId = [];
+            if (updatedListData.length > 0) {
+                preNextLeadId = updatedListData.map((item) => item.id);
+                await AsyncStorage.setItem("preNextLeadId", JSON.stringify(preNextLeadId));
             }
             // console.log("Fetched List Data:", updatedListData);
             setOrderData2(updatedListData);
@@ -158,7 +168,7 @@ export default function Due(props) {
                         {/* <Text style={{ ...FONTS.fontSm, ...FONTS.fontMedium, color: colors.title }}>{data.price}</Text> */}
                     </View>
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                        <Text style={{ ...FONTS.font, color: colors.text, fontSize: 13 }}>{data.sub_source_name}</Text>
+                        <Text style={{ ...FONTS.font, color: colors.text, fontSize: 13 }}>{data.assigned_to}</Text>
                         {/* <Text style={{ ...FONTS.fontSm, ...FONTS.fontMedium, color: colors.title }}>{data.orderType}</Text> */}
                     </View>
                 </TouchableOpacity>

@@ -8,7 +8,7 @@ import {
   StyleSheet,
   ActivityIndicator,
 } from 'react-native';
-
+import { COLORS } from './theme';
 // Suggestion shape: { id: string, label: string }
 
 export default function AutoSuggestInput({
@@ -18,13 +18,25 @@ export default function AutoSuggestInput({
   placeholder = 'Search...',
   debounceMs = 300,
   minChars = 1,
+  initialValue,       // optional: { id, label } — pre-selected item (e.g. editing an existing record)
 }) {
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState(initialValue?.label || '');
+  const [selectedId, setSelectedId] = useState(initialValue?.id ?? null);
   const [suggestions, setSuggestions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [showList, setShowList] = useState(false);
   const debounceTimer = useRef(null);
   const requestId = useRef(0);
+
+  // Sync in if initialValue arrives/changes asynchronously
+  // (e.g. the parent's dataset loads from an API after this component mounts)
+  useEffect(() => {
+    if (initialValue?.id !== undefined && initialValue.id !== selectedId) {
+      setQuery(initialValue.label || '');
+      setSelectedId(initialValue.id);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialValue?.id, initialValue?.label]);
 
   const filterLocal = useCallback(
     (text) => {
@@ -45,6 +57,7 @@ export default function AutoSuggestInput({
   const handleChangeText = (text) => {
     setQuery(text);
     setShowList(true);
+    setSelectedId(null); // user is typing again — previous selection no longer applies
 
     if (debounceTimer.current) clearTimeout(debounceTimer.current);
 
@@ -82,6 +95,7 @@ export default function AutoSuggestInput({
 
   const handleSelect = (item) => {
     setQuery(item.label);
+    setSelectedId(item.id);
     setShowList(false);
     setSuggestions([]);
     onSelect(item);
@@ -94,6 +108,7 @@ export default function AutoSuggestInput({
         value={query}
         onChangeText={handleChangeText}
         placeholder={placeholder}
+        placeholderTextColor={COLORS.text}
         onFocus={() => setShowList(true)}
         autoCorrect={false}
       />
@@ -133,12 +148,13 @@ const styles = StyleSheet.create({
   },
   input: {
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: '#5c5987',
     borderRadius: 8,
     paddingHorizontal: 12,
     paddingVertical: 10,
     fontSize: 16,
-    backgroundColor: '#fff',
+    backgroundColor: COLORS.background,
+    color: COLORS.text,
   },
   loadingRow: {
     position: 'absolute',

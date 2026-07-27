@@ -14,13 +14,15 @@ import RBSheet from "react-native-raw-bottom-sheet";
 import { SafeAreaView } from "react-native-safe-area-context";
 import CustomButton from "../../components/CustomButton";
 export default function LeadItemHistory(props) {
+    // console.log("LeadItemHistory props:", props);
     const { colors } = useTheme();
     const theme = useTheme();
     const [loading, setLoading] = useState(false);
     const navigation = useNavigation();
     const [records, setDataset] = useState([]);
     const refRBSheet = useRef();
-    const [leadId, setLeadId] = useState(props.leadId || null);
+    let leadId = props.leadId || null;
+    const [title2, setTitle2] = useState(props.title || "Lead History");
     const getLeadData = async () => {
         console.log(leadId);
         if (!leadId) {
@@ -28,7 +30,7 @@ export default function LeadItemHistory(props) {
             return;
         }
         let url = `${process.env.EXPO_PUBLIC_API_URL_WEB}lead-status-entry?lead_view=1&lead_id=${leadId}`;
-        console.log("Fetching data from URL:", url);
+        // console.log("Fetching data from URL:", url);
         setLoading(true);
         try {
 
@@ -49,12 +51,28 @@ export default function LeadItemHistory(props) {
         }
     };
     useEffect(() => {
-        console.log(props.leadId);
+        // console.log(props.leadId);
+        leadId = props.leadId;
         getLeadData();
     }, [props.leadId]);
 
+    useEffect(() => {
+        if (title2) {
+            // console.log("Refreshing lead data...");
+            getLeadData();
+            setTitle2("Lead History"); // Reset the title after fetching data
+            props.setTitle && props.setTitle(title2); // Notify parent component to update title
+        }
+    }, [title2]);
+
+
     return (
         <>
+            {loading && (
+                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                    <Text style={{ color: colors.text }}>Loading...</Text>
+                </View>
+            )}
             <SafeAreaView
                 style={{
                     flex: 1,
@@ -77,11 +95,15 @@ export default function LeadItemHistory(props) {
                             color: COLORS.white,
                         }}
                     >
-                        History
+
+                        {props.title || "Lead History" + props.leadId}
+                        {props.title2 && ` - ${props.title2}`}
                     </Text>
 
-                    <View style={{ width: 100 }}>
+                    <View style={{ width: 80 }}>
                         <CustomButton
+                            fontSize={4}
+                            btnH={40}
                             title="Post"
                             btnSm
                             color={COLORS.secondary}
@@ -114,7 +136,12 @@ export default function LeadItemHistory(props) {
                             }
                         }}
                     >
-                        <LeadPost leadId={leadId} />
+                        <LeadPost
+                            leadId={leadId}
+                            onRequestClose={() => refRBSheet.current.close()}
+                            title2={title2}
+                            setTitle2={setTitle2}
+                        />
                     </RBSheet>
                     <View style={styles.timeline}>
                         {/* Vertical Line */}
