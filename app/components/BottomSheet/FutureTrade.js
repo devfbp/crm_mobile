@@ -70,6 +70,8 @@ const FutureTrade = (props) => {
             AsyncStorage.removeItem("lead_status_id");
             AsyncStorage.removeItem("lead_rm_user_id");
             AsyncStorage.removeItem("selected_user");
+            AsyncStorage.removeItem("lead_rmuser");
+            AsyncStorage.removeItem("lead_search");
 
         } catch (error) {
             console.error('Error clearing AsyncStorage:', error);

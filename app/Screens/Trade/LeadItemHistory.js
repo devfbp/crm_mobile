@@ -100,11 +100,11 @@ export default function LeadItemHistory(props) {
                         {props.title2 && ` - ${props.title2}`}
                     </Text>
 
-                    <View style={{ width: 80 }}>
+                    <View style={{ width: 120 }}>
                         <CustomButton
                             fontSize={4}
                             btnH={40}
-                            title="Post"
+                            title="Update Status"
                             btnSm
                             color={COLORS.secondary}
                             onPress={() => refRBSheet.current.open()}
@@ -138,6 +138,7 @@ export default function LeadItemHistory(props) {
                     >
                         <LeadPost
                             leadId={leadId}
+                            leads={props.leads || []}
                             onRequestClose={() => refRBSheet.current.close()}
                             title2={title2}
                             setTitle2={setTitle2}

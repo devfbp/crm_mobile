@@ -33,6 +33,8 @@ function Trade() {
     const [filter, setFilter] = useState([]);
     const [buttons, setButtons] = useState(['All']);
 
+    const [title2, setTitle2] = useState(null);
+    const [title3, setTitle3] = useState(null);
     const refRBSheet = useRef();
     const refSettingSheet = useRef();
 
@@ -54,7 +56,7 @@ function Trade() {
         }
     };
 
-    
+
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }}>
             <RBSheet
@@ -77,7 +79,7 @@ function Trade() {
                     }
                 }}
             >
-                <FutureTrade filter={filter} setFilter={setFilter}  />
+                <FutureTrade filter={filter} setFilter={setFilter} />
             </RBSheet>
 
             <RBSheet
@@ -100,7 +102,7 @@ function Trade() {
                     }
                 }}
             >
-                
+
                 {/* <FutureTrade/> */}
             </RBSheet>
             <View
@@ -160,6 +162,33 @@ function Trade() {
             <View style={GlobalStyleSheet.container}>
                 <ButtonContainer buttons={buttons} onClick={onClick} scrollX={scrollX} />
             </View>
+            {title2 || title3 ? (
+                <View
+                    style={[
+                        GlobalStyleSheet.container,
+                        {
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            paddingVertical: 3,
+                            marginTop: 0,
+                        },
+                    ]}
+                >
+                    {title2 ? (
+                        <Text style={{ ...FONTS.font, color: colors.text }}>
+                            {`${title2}`}
+                        </Text>
+                    ) : <View />}
+
+                    {title3 ? (
+                        <Text style={{ ...FONTS.font, color: colors.text }}>
+                            {`${title3}`}
+                        </Text>
+                    ) : <View />}
+                </View>
+            ) : null}
+            <View style={{ height: 1, backgroundColor: colors.borderColor }} />
 
             <ScrollView showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 80 }}>
 
@@ -177,11 +206,11 @@ function Trade() {
                         { useNativeDriver: false },
                     )}>
 
-                    
+
 
                     <View style={[styles.cardTab]} >
                         <View style={{ ...GlobalStyleSheet.container, paddingTop: 0 }}>
-                            <LeadItem filter={filter} buttons={buttons} setButtons={setButtons} />
+                            <LeadItem filter={filter} buttons={buttons} setButtons={setButtons} setTitle2={setTitle2} setTitle3={setTitle3} />
                         </View>
                     </View>
 
@@ -217,7 +246,7 @@ function ButtonContainer({ buttons, onClick, scrollX }) {
                     key={btn}
                     style={styles.btn}
                     onPress={() => onClick(i)}>
-                    <Text style={{ ...FONTS.font, color: colors.text }}>{`${btn} (0)`}</Text>
+                    <Text style={{ ...FONTS.font, color: colors.text }}>{`${btn?.[0]} (0)`}</Text>
                 </TouchableOpacity>
             ))}
             <Animated.View

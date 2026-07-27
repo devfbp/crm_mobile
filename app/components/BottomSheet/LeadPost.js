@@ -15,7 +15,7 @@ const LeadPost = (props) => {
     const { colors } = useTheme();
     const [leadId, setLeadId] = useState(props.leadId || null);
     const [isFocused, setIsFocused] = useState(false);
-    const [statusValue, setStatusValue] = useState(null);
+    const [statusValue, setStatusValue] = useState("All Status");
     const [remarks, setRemarks] = useState('');
     const [scheduleDate, setScheduleDate] = useState(null);
     const [rmuserId, setRmuserId] = useState('');
@@ -31,7 +31,7 @@ const LeadPost = (props) => {
             alert("Please select a status.");
             return;
         }
-        if(!remarks.trim()) {
+        if (!remarks.trim()) {
             alert("Please enter remarks.");
             return;
         }
@@ -75,8 +75,14 @@ const LeadPost = (props) => {
         console.log("Form has been reset.");
         // props.setRefreshing && props.setRefreshing(true); // Notify parent component to refresh data
         props.onRequestClose && props.onRequestClose(); // Close the bottom sheet if a callback is provided
-        
+
     };
+    useEffect(() => {
+        if(props?.leads?.status) {
+            console.log("Setting initial status value from props:", props?.leads?.status);
+            setStatusValue(props?.leads?.status);
+        }
+    }, [props]);
     return (
         <View style={{ ...GlobalStyleSheet.container }}>
             <View
@@ -98,17 +104,15 @@ const LeadPost = (props) => {
                 }]}
             >
                 <View style={{ flex: 1, paddingLeft: 0 }}>
-                    <Text style={{ ...FONTS.h6, color: colors.text, marginBottom: 2 }}>Add Leads Remarks</Text>
+                    <Text style={{ ...FONTS.h6, color: colors.text, marginBottom: 2 }}>Update Lead Status</Text>
                 </View>
             </View>
             <View style={{ marginBottom: 18 }}>
                 <CustomSelectBox
                     selectItems={getStatus().map((item) => item.label)}
                     defaultValue={'Lead Status'}
-                    value={
-                        getStatus().find((item) => item.value === statusValue)?.label || "All Status"
-                    }
-                    setValue={handleStatusChange}
+                    value={statusValue}
+                    setStatusValue={handleStatusChange}
                 />
             </View>
 

@@ -56,9 +56,9 @@ export default function Due(props) {
                 body.search = searchTerm;
                 await AsyncStorage.setItem("lead_search", searchTerm.toString());
             }
-            if (filters.rmuser) {
-                body.rmuser = filters.rmuser;
-                await AsyncStorage.setItem("lead_rmuser", filters.rmuser.toString());
+            if (filters.rmUser) {
+                body.rmuser = filters.rmUser;
+                await AsyncStorage.setItem("lead_rmuser", filters.rmUser.toString());
             }
 
             if (filters.rmuserId) {
@@ -108,13 +108,23 @@ export default function Due(props) {
             let title = [`All (${data.total})`];
             let updateTitle = [];
             if(await AsyncStorage.getItem("tag_title")) {
-                // updateTitle.push(`${await AsyncStorage.getItem("tag_title")}`);
+                updateTitle.push(`${await AsyncStorage.getItem("tag_title")}`);
             } 
             if(await AsyncStorage.getItem("status_title")) {
-                // updateTitle.push(`${await AsyncStorage.getItem("status_title")}`);
+                updateTitle.push(`${await AsyncStorage.getItem("status_title")}`);
             }
             if(updateTitle.length > 0) {
                 title = [updateTitle.join(" - ") + ` (${data.total})`];
+            }
+            if(await AsyncStorage.getItem("lead_rmuser") && await AsyncStorage.getItem("lead_rmuser") !== "null") {
+                props.setTitle2(`RM: ${await AsyncStorage.getItem("lead_rmuser")}`);
+            } else {
+                props.setTitle2(null);
+            }
+            if(await AsyncStorage.getItem("lead_search") && await AsyncStorage.getItem("lead_search") !== "null") {
+                props.setTitle3(`Search: ${await AsyncStorage.getItem("lead_search")}`);
+            } else {
+                props.setTitle3(null);
             }
             props.setButtons(title);
 

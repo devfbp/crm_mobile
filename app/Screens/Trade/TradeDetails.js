@@ -290,6 +290,7 @@ const LeadDetails = (props) => {
                     }}
                 >
                     <LeadItemHistory 
+                        leads={dataset || []}
                         row={leadId} 
                         leadId={leadId} 
                         title={title} 
