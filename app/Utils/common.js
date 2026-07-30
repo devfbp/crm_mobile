@@ -3,10 +3,10 @@ export const loadUser = async () => {
   const user = await getDecodedToken();
 
   if (user) {
-    console.log('User Name:', user.userName);
-    console.log('Email:', user.email);
-    console.log('Role:', user.roleName);
-    console.log('Expires:', user.expiresAt);
+    // console.log('User Name:', user.userName);
+    // console.log('Email:', user.email);
+    // console.log('Role:', user.roleName);
+    // console.log('Expires:', user.expiresAt);
   }
 };
 

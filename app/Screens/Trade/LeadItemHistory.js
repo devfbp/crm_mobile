@@ -14,7 +14,7 @@ import RBSheet from "react-native-raw-bottom-sheet";
 import { SafeAreaView } from "react-native-safe-area-context";
 import CustomButton from "../../components/CustomButton";
 export default function LeadItemHistory(props) {
-    // console.log("LeadItemHistory props:", props);
+    // // console.log("LeadItemHistory props:", props);
     const { colors } = useTheme();
     const theme = useTheme();
     const [loading, setLoading] = useState(false);
@@ -24,13 +24,13 @@ export default function LeadItemHistory(props) {
     let leadId = props.leadId || null;
     const [title2, setTitle2] = useState(props.title || "Lead History");
     const getLeadData = async () => {
-        console.log(leadId);
+        // console.log(leadId);
         if (!leadId) {
             console.error('Lead ID is not provided');
             return;
         }
         let url = `${process.env.EXPO_PUBLIC_API_URL_WEB}lead-status-entry?lead_view=1&lead_id=${leadId}`;
-        // console.log("Fetching data from URL:", url);
+        // // console.log("Fetching data from URL:", url);
         setLoading(true);
         try {
 
@@ -51,14 +51,14 @@ export default function LeadItemHistory(props) {
         }
     };
     useEffect(() => {
-        // console.log(props.leadId);
+        // // console.log(props.leadId);
         leadId = props.leadId;
         getLeadData();
     }, [props.leadId]);
 
     useEffect(() => {
         if (title2) {
-            // console.log("Refreshing lead data...");
+            // // console.log("Refreshing lead data...");
             getLeadData();
             setTitle2("Lead History"); // Reset the title after fetching data
             props.setTitle && props.setTitle(title2); // Notify parent component to update title

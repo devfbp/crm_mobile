@@ -11,11 +11,12 @@ import DateTimeInput from '../../Utils/DateTimePicker';
 import RBSheet from "react-native-raw-bottom-sheet";
 
 const LeadPost = (props) => {
-    console.log("LeadPost props:", props);
+    // console.log("LeadPost props:", props);
     const { colors } = useTheme();
     const [leadId, setLeadId] = useState(props.leadId || null);
     const [isFocused, setIsFocused] = useState(false);
     const [statusValue, setStatusValue] = useState("All Status");
+    const [statusId, setStatusId] = useState(null);
     const [remarks, setRemarks] = useState('');
     const [scheduleDate, setScheduleDate] = useState(null);
     const [rmuserId, setRmuserId] = useState('');
@@ -23,11 +24,12 @@ const LeadPost = (props) => {
     const handleStatusChange = async (value) => {
         const selectedStatus = getStatus().find((item) => item.label === value);
         if (selectedStatus) {
-            setStatusValue(selectedStatus.value);
+            setStatusValue(selectedStatus.label);
+            setStatusId(selectedStatus.value);
         }
     }
     const postLeads = async () => {
-        if (!statusValue) {
+        if (!statusValue || statusId === null) {
             alert("Please select a status.");
             return;
         }
@@ -37,7 +39,7 @@ const LeadPost = (props) => {
         }
         const payload = {
             slug: leadId,
-            lead_status_id: statusValue,
+            lead_status_id: statusId,
             status_remarks: remarks,
             schedule_date: scheduleDate ? scheduleDate.toISOString() : null,
             rm_user_id: rmuserId || null,
@@ -53,7 +55,7 @@ const LeadPost = (props) => {
                 body: JSON.stringify(payload),
             });
             const data = await response.json();
-            // console.log("Response from server:", data);
+            // // console.log("Response from server:", data);
             if (response.ok) {
                 alert("Lead posted successfully!");
                 // Optionally reset the form or navigate away
@@ -72,14 +74,14 @@ const LeadPost = (props) => {
         setRemarks('');
         setScheduleDate(null);
         setRmuserId('');
-        console.log("Form has been reset.");
+        // console.log("Form has been reset.");
         // props.setRefreshing && props.setRefreshing(true); // Notify parent component to refresh data
         props.onRequestClose && props.onRequestClose(); // Close the bottom sheet if a callback is provided
 
     };
     useEffect(() => {
         if(props?.leads?.status) {
-            console.log("Setting initial status value from props:", props?.leads?.status);
+            // console.log("Setting initial status value from props:", props?.leads?.status);
             setStatusValue(props?.leads?.status);
         }
     }, [props]);
@@ -125,11 +127,11 @@ const LeadPost = (props) => {
                     placeholder="Schedule Date & Time"
                 />
             </View>
-            <View style={{ marginBottom: 18 }}>
+            {/* <View style={{ marginBottom: 18 }}>
                 <AutoSuggestInput
                     fetchSuggestions={async (query) => {
                         let url = `${process.env.EXPO_PUBLIC_API_URL_WEB}user?lead_rm=1&limit=5&search=${encodeURIComponent(query)}`;
-                        console.log("Fetching suggestions from URL:", url);
+                        // console.log("Fetching suggestions from URL:", url);
                         const res = await fetch(url);
                         const json = await res.json();
                         const list = Array.isArray(json) ? json : (json.results ?? []);
@@ -138,7 +140,7 @@ const LeadPost = (props) => {
                             label: r.name,           // ✅ this part was correct
                         }));
                     }}
-                    // onSelect={(item) => console.log('Selected:', item)}
+                    // onSelect={(item) => // console.log('Selected:', item)}
                     placeholder="Select RM User"
                     minChars={2}
                     debounceMs={400}
@@ -146,7 +148,7 @@ const LeadPost = (props) => {
                         setRmuserId(item.id);
                     }}
                 />
-            </View>
+            </View> */}
 
             <View style={{ marginBottom: 18 }}>
                 <TextInput

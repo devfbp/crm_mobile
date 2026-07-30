@@ -44,13 +44,13 @@ function Trade() {
     const spotScrollViewRef = useRef(null);
 
     useEffect(() => {
-        // console.log('Filter updated:', filter);
+        // // console.log('Filter updated:', filter);
         refRBSheet.current.close()
     }, [filter]);
 
     const onClick = (i) => {
         if (spotScrollViewRef.current) {
-            // console.log(i);
+            // // console.log(i);
             setFilter(i)
             spotScrollViewRef.current.scrollTo({ x: i * width, animated: true });
         }

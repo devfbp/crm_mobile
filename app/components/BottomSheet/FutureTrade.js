@@ -21,7 +21,7 @@ const FutureTrade = (props) => {
     const [initialValue, setInitialValue] = useState('');
     const fetchFilteredData = async () => {
         // Implement the logic to fetch filtered data based on keyword, tagValue, and statusValue
-        // console.log('Fetching filtered data with:', { keyword, tagValue, statusValue });
+        // // console.log('Fetching filtered data with:', { keyword, tagValue, statusValue });
         props.setFilter({ keyword, tagValue, statusValue, rmuserId, rmUser });
     }
 
@@ -44,7 +44,7 @@ const FutureTrade = (props) => {
         setRmUser(item.label);
     }
     useEffect(() => {
-        console.log("Props filter changed:", props.filter);
+        // console.log("Props filter changed:", props.filter);
         setKeyword(props.filter.keyword || '');
         setTagValue(props.filter.tagValue || '');
         setStatusValue(props.filter.statusValue || '');
@@ -141,7 +141,7 @@ const FutureTrade = (props) => {
                 <AutoSuggestInput
                     fetchSuggestions={async (query) => {
                         let url = `${process.env.EXPO_PUBLIC_API_URL_WEB}user?lead_rm=1&limit=5&search=${encodeURIComponent(query)}`;
-                        console.log("Fetching suggestions from URL:", url);
+                        // console.log("Fetching suggestions from URL:", url);
                         const res = await fetch(url);
                         const json = await res.json();
                         const list = Array.isArray(json) ? json : (json.results ?? []);
@@ -150,7 +150,7 @@ const FutureTrade = (props) => {
                             label: r.name,           // ✅ this part was correct
                         }));
                     }}
-                    // onSelect={(item) => console.log('Selected:', item)}
+                    // onSelect={(item) => // console.log('Selected:', item)}
                     placeholder="Select RM User"
                     minChars={2}
                     debounceMs={400}

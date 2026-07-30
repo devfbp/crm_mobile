@@ -11,6 +11,12 @@ export default {
     android: {
       package: "com.fullbasketproperty.fbp"
     },
+    ios: {
+      bundleIdentifier: "com.fullbasketproperty.fbp",
+      infoPlist: {
+        ITSAppUsesNonExemptEncryption: false,
+      }
+    },
     
     extra: {
       BASE_URL: process.env.BASE_URL,

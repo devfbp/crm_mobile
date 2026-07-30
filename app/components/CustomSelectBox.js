@@ -59,7 +59,7 @@ const CustomSelectBox = (props) => {
                         return(
                             <View style={{marginBottom:15}}  key={index}>
                                 <TouchableOpacity
-                                    onPress={()=> {setActiveItem(data);setModalVisible(false);props.setValue(data)}}
+                                    onPress={()=> {setActiveItem(data);setModalVisible(false);props.setStatusValue(data)}}
                                     style={[{
                                         backgroundColor:colors.background,
                                         height:50,

@@ -45,9 +45,12 @@ const Onboarding = (props) => {
         props.navigation.replace('DrawerNavigation');
       } else {
         console.log("Onboarding: No user data found, navigating to SignIn");
-        props.navigation.replace('SignIn');
+        // props.navigation.replace('SignIn');
+        if(typeof window !== 'undefined') {
+          window.location.href = '/SignIn'; // Redirect to SignIn page
+        }
       }
-      console.log("Onboarding:", userData?.user_id);
+      // console.log("Onboarding:", userData?.user_id);
     };
     loadUser();
   }, []);

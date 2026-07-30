@@ -33,7 +33,7 @@ const SignIn = (props) => {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const url = `${process.env.EXPO_PUBLIC_API_URL}login`;
-  console.log('Login URL:', url);
+  // console.log('Login URL:', url);
 
   const handleLogin = async () => {
     if (!username.trim()) {
@@ -59,13 +59,13 @@ const SignIn = (props) => {
           password,
         }),
       });
-      console.log('Login Response:', response);
-      console.log('Login Response Status:', response.status);
+      // console.log('Login Response:', response);
+      // console.log('Login Response Status:', response.status);
 
       // Parse response only once
       const data = await response.json();
 
-      console.log('Login Response Body:', data);
+      // console.log('Login Response Body:', data);
 
       if (!response.ok) {
         Alert.alert(

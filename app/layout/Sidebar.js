@@ -16,7 +16,7 @@ function Sidebar() {
     useEffect(() => {
         const loadUser = async () => {
           const userData = await getToken();
-            //console.log("Decoded Token:", userData);
+            //// console.log("Decoded Token:", userData);
           setUser(userData);
         };
         loadUser();

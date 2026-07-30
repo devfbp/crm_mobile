@@ -30,7 +30,7 @@ export default function Due(props) {
     const navigation = useNavigation();
     const getLeadData = async (filters, pageNumber, dataPerPage=100) => {
         try {
-            console.log("Filters", filters);
+            // console.log("Filters", filters);
             setLoading(true);
             const searchTerm = await AsyncStorage.getItem("lead_search");
             const url = `${process.env.EXPO_PUBLIC_API_URL_WEB}lead/view`;
@@ -71,7 +71,7 @@ export default function Due(props) {
                 await AsyncStorage.setItem("lead_status_id", filters.statusValue.toString());
             }
             if (loading) return;
-            // console.log("Fetching data with filters:", url, "-", body);
+            // // console.log("Fetching data with filters:", url, "-", body);
             const response = await fetch(url, {
                 method: "POST",
                 headers: {
@@ -81,7 +81,7 @@ export default function Due(props) {
                 body: JSON.stringify(body),
             });
             const data = await response.json();
-            // console.log("Fetched Data:", data?.data);
+            // // console.log("Fetched Data:", data?.data);
             let updatedListData = [];
             if (data?.data) {
                 updatedListData = data.data.map((item, index) => ({
@@ -101,9 +101,9 @@ export default function Due(props) {
                 preNextLeadId = updatedListData.map((item) => item.id);
                 await AsyncStorage.setItem("preNextLeadId", JSON.stringify(preNextLeadId));
             }
-            // console.log("Fetched List Data:", updatedListData);
+            // // console.log("Fetched List Data:", updatedListData);
             setOrderData2(updatedListData);
-            // console.log("Updated OrderData2:", updatedListData);
+            // // console.log("Updated OrderData2:", updatedListData);
             setTotalRecords(data.total);
             let title = [`All (${data.total})`];
             let updateTitle = [];
@@ -136,7 +136,7 @@ export default function Due(props) {
         }
     }
     useEffect(() => {
-        // console.log(props.filter);
+        // // console.log(props.filter);
         getLeadData(props.filter, 1, dataPerPage);
     }, [props.filter]);
     return (

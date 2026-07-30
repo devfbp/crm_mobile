@@ -39,7 +39,7 @@ const LeadDetails = (props) => {
             return;
         }
         const url = `${process.env.EXPO_PUBLIC_API_URL}lead?id=${leadId}`;
-        // console.log("Fetching data from URL:", url);
+        // // console.log("Fetching data from URL:", url);
         setLoading(true);
         try {
             const response = await fetch(url, {
@@ -66,19 +66,19 @@ const LeadDetails = (props) => {
     };
 
     useEffect(() => {
-        console.log(props.filter);
+        // console.log(props.filter);
         getLeadData();
     }, [props.filter, leadId]);
 
     useEffect(() => {
-        console.log(props.filter);
+        // console.log(props.filter);
         getLeadData();
     }, [leadId]);
 
     useEffect(() => {
         if (title) {
-            // console.log(props.filter);
-            console.log("Refreshing lead data...");
+            // // console.log(props.filter);
+            // console.log("Refreshing lead data...");
             getLeadData();
             setTitle("Lead History"); // Reset the title after fetching data
         }
@@ -87,8 +87,8 @@ const LeadDetails = (props) => {
     const loadDetails = async (direction) => {
         try {
             const raw = await AsyncStorage.getItem("preNextLeadId");
-            console.log("Stored lead IDs:", raw);
-            // console.log("Current lead ID:", leadId);
+            // console.log("Stored lead IDs:", raw);
+            // // console.log("Current lead ID:", leadId);
             if (!raw) {
                 console.error('No lead list found in storage');
                 return;
@@ -105,7 +105,7 @@ const LeadDetails = (props) => {
             const newIndex = direction === 1 ? currentIndex + 1 : currentIndex - 1;
 
             if (newIndex < 0 || newIndex >= leadIds.length) {
-                console.log(`No ${direction} lead available`);
+                // console.log(`No ${direction} lead available`);
                 return; // at the start/end of the list — disable button or show a toast
             }
 

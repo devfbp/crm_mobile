@@ -1,7 +1,7 @@
 import Constants from 'expo-constants';
 
 const getBaseUrl = () => {
-  console.log('Expo Constants:', Constants);
+  // console.log('Expo Constants:', Constants);
   const pathend = "/api/app-mobile/";
   // Physical device or production
   if (!__DEV__) return 'https://your-production-url.com'+pathend;

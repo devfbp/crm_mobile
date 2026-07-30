@@ -139,7 +139,7 @@ const HomeScreen = ({ navigation }) => {
 
   // callbacks
   const handleSheetChanges = useCallback((index) => {
-    console.log('handleSheetChanges', index);
+    // console.log('handleSheetChanges', index);
   }, []);
 
   const [loading, setLoading] = useState(false);
@@ -177,7 +177,7 @@ const HomeScreen = ({ navigation }) => {
           subTitle: item.subTitle,
         }));
       }
-      console.log("Fetched List Data:", updatedListData);
+      // console.log("Fetched List Data:", updatedListData);
       setListData(updatedListData);
     } catch (error) {
       console.error('Login Error:', error);
