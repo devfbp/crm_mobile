@@ -15,6 +15,7 @@ const FutureTrade = (props) => {
     const [keyword, setKeyword] = useState('');
     const [tagValue, setTagValue] = useState('');
     const [statusValue, setStatusValue] = useState('');
+    const [statusId, setStatusId] = useState('');
     const [isFocused, setIsFocused] = useState(false);
     const [rmuserId, setRmuserId] = useState('');
     const [rmUser, setRmUser] = useState('');
@@ -22,7 +23,7 @@ const FutureTrade = (props) => {
     const fetchFilteredData = async () => {
         // Implement the logic to fetch filtered data based on keyword, tagValue, and statusValue
         // // console.log('Fetching filtered data with:', { keyword, tagValue, statusValue });
-        props.setFilter({ keyword, tagValue, statusValue, rmuserId, rmUser });
+        props.setFilter({ keyword, tagValue, statusValue, rmuserId, rmUser, statusId });
     }
 
     const handleTagChange = async (value) => {
@@ -35,32 +36,43 @@ const FutureTrade = (props) => {
     const handleStatusChange = async (value) => {
         const selectedStatus = getStatus().find((item) => item.label === value);
         if (selectedStatus) {
-            setStatusValue(selectedStatus.value);
+            setStatusValue(selectedStatus.label);
+            setStatusId(selectedStatus.value);
             await AsyncStorage.setItem("status_title", value);
+            await AsyncStorage.setItem("lead_status_id", selectedStatus.value);
         }
     }
     const selectHandle = async (item) => {
+        if (!item) {
+            setRmuserId(null);
+            setRmUser(null);
+            await AsyncStorage.setItem("lead_rmuser", '');
+            return;
+        }
+        
         setRmuserId(item.id);
         setRmUser(item.label);
-    }
+    };
     useEffect(() => {
         // console.log("Props filter changed:", props.filter);
         setKeyword(props.filter.keyword || '');
         setTagValue(props.filter.tagValue || '');
         setStatusValue(props.filter.statusValue || '');
+        setStatusId(props.filter.statusId || '');
         setRmuserId(props.filter.rmuserId || '');
         setRmUser(props.filter.rmUser || '');
         setInitialValue(props.filter.rmUser ? { id: props.filter.rmuserId, label: props.filter.rmUser } : null);
     }, [props.filter]);
-    
+
 
 
     const handleReset = () => {
         setKeyword('');
         setTagValue('');
         setStatusValue('');
+        setStatusId('');
         setRmuserId('');
-        props.setFilter({ keyword: '', tagValue: '', statusValue: '', rmuserId: '' });
+        props.setFilter({ keyword: '', tagValue: '', statusValue: '', statusId: '', rmuserId: '' });
         try {
             AsyncStorage.removeItem("tag_title");
             AsyncStorage.removeItem("status_title");
@@ -71,7 +83,6 @@ const FutureTrade = (props) => {
             AsyncStorage.removeItem("lead_rm_user_id");
             AsyncStorage.removeItem("selected_user");
             AsyncStorage.removeItem("lead_rmuser");
-            AsyncStorage.removeItem("lead_search");
 
         } catch (error) {
             console.error('Error clearing AsyncStorage:', error);
@@ -131,9 +142,7 @@ const FutureTrade = (props) => {
                 <CustomSelectBox
                     selectItems={getStatus().map((item) => item.label)}
                     defaultValue={'All Status'}
-                    value={
-                        getStatus().find((item) => item.value === statusValue)?.label || "All Status"
-                    }
+                    value={statusValue}
                     setValue={handleStatusChange}
                 />
             </View>
@@ -141,21 +150,29 @@ const FutureTrade = (props) => {
                 <AutoSuggestInput
                     fetchSuggestions={async (query) => {
                         let url = `${process.env.EXPO_PUBLIC_API_URL_WEB}user?lead_rm=1&limit=5&search=${encodeURIComponent(query)}`;
-                        // console.log("Fetching suggestions from URL:", url);
                         const res = await fetch(url);
                         const json = await res.json();
+
                         const list = Array.isArray(json) ? json : (json.results ?? []);
+
                         return list.map((r) => ({
-                            id: String(r.user_id),   // ✅ was r.id, which doesn't exist
-                            label: r.name,           // ✅ this part was correct
+                            id: String(r.user_id),
+                            label: r.name,
                         }));
                     }}
-                    // onSelect={(item) => // console.log('Selected:', item)}
                     placeholder="Select RM User"
                     minChars={2}
                     debounceMs={400}
                     onSelect={selectHandle}
-                    initialValue={initialValue}  // ✅
+                    onChangeText={(text) => {
+                        console.log("Text changed:", text);
+
+                        if (text.trim() === "") {
+                            setRmuserId(null);
+                            setRmUser(null);
+                        }
+                    }}
+                    initialValue={initialValue}
                 />
             </View>
             <View style={{ marginBottom: 18 }} flexDirection={'row'} justifyContent={'space-between'}>
@@ -190,4 +207,4 @@ const styles = StyleSheet.create({
 })
 
 
-export default FutureTrade;
+export default FutureTrade;6

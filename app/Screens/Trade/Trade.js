@@ -44,7 +44,7 @@ function Trade() {
     const spotScrollViewRef = useRef(null);
 
     useEffect(() => {
-        // // console.log('Filter updated:', filter);
+        // console.log('Filter updated:', filter);
         refRBSheet.current.close()
     }, [filter]);
 

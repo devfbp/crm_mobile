@@ -52,9 +52,8 @@ export default function Due(props) {
             if (filters.keyword) {
                 body.search = filters.keyword;
                 await AsyncStorage.setItem("lead_search", filters.keyword.toString());
-            } else if (searchTerm) {
-                body.search = searchTerm;
-                await AsyncStorage.setItem("lead_search", searchTerm.toString());
+            } else {
+                await AsyncStorage.removeItem("lead_search");
             }
             if (filters.rmUser) {
                 body.rmuser = filters.rmUser;
@@ -66,12 +65,12 @@ export default function Due(props) {
                 await AsyncStorage.setItem("lead_assigned_to", filters.rmuserId.toString());
             }
 
-            if (filters.statusValue && filters.statusValue > 0) {
-                body.lead_status_id = filters.statusValue;
-                await AsyncStorage.setItem("lead_status_id", filters.statusValue.toString());
+            if (filters.statusId && filters.statusId > 0) {
+                body.lead_status_id = filters.statusId;
+                await AsyncStorage.setItem("lead_status_id", filters.statusId.toString());
             }
             if (loading) return;
-            // // console.log("Fetching data with filters:", url, "-", body);
+            console.log("Fetching data with filters:", url, "-", body);
             const response = await fetch(url, {
                 method: "POST",
                 headers: {

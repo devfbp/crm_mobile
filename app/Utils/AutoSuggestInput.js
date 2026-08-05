@@ -6,6 +6,7 @@ import {
   Text,
   TouchableOpacity,
   StyleSheet,
+  onChangeText,
   ActivityIndicator,
 } from 'react-native';
 import { COLORS } from './theme';
@@ -54,12 +55,65 @@ export default function AutoSuggestInput({
     };
   }, []);
 
+  // const handleChangeText = (text) => {
+  //   setQuery(text);
+  //   setShowList(true);
+  //   setSelectedId(null); // user is typing again — previous selection no longer applies
+
+  //   if (debounceTimer.current) clearTimeout(debounceTimer.current);
+
+  //   if (text.length < minChars) {
+  //     setSuggestions([]);
+  //     setLoading(false);
+  //     return;
+  //   }
+
+  //   debounceTimer.current = setTimeout(async () => {
+  //     if (fetchSuggestions) {
+  //       // Dynamic mode: hit an API, guard against out-of-order responses
+  //       const currentRequest = ++requestId.current;
+  //       setLoading(true);
+  //       try {
+  //         const results = await fetchSuggestions(text);
+  //         if (currentRequest === requestId.current) {
+  //           setSuggestions(results);
+  //         }
+  //       } catch (err) {
+  //         if (currentRequest === requestId.current) {
+  //           setSuggestions([]);
+  //         }
+  //       } finally {
+  //         if (currentRequest === requestId.current) {
+  //           setLoading(false);
+  //         }
+  //       }
+  //     } else {
+  //       // Static mode: filter in-memory list
+  //       setSuggestions(filterLocal(text));
+  //     }
+  //   }, debounceMs);
+  // };
+
   const handleChangeText = (text) => {
     setQuery(text);
     setShowList(true);
-    setSelectedId(null); // user is typing again — previous selection no longer applies
+    setSelectedId(null);
 
-    if (debounceTimer.current) clearTimeout(debounceTimer.current);
+    // Send text change back to parent
+    if (onChangeText) {
+      onChangeText(text);
+    }
+
+    if (debounceTimer.current) {
+      clearTimeout(debounceTimer.current);
+    }
+
+    if (text.trim() === "") {
+      setSuggestions([]);
+      setLoading(false);
+      onSelect?.(null);
+      return;
+    }
 
     if (text.length < minChars) {
       setSuggestions([]);
@@ -69,11 +123,12 @@ export default function AutoSuggestInput({
 
     debounceTimer.current = setTimeout(async () => {
       if (fetchSuggestions) {
-        // Dynamic mode: hit an API, guard against out-of-order responses
         const currentRequest = ++requestId.current;
         setLoading(true);
+
         try {
           const results = await fetchSuggestions(text);
+
           if (currentRequest === requestId.current) {
             setSuggestions(results);
           }
@@ -87,7 +142,6 @@ export default function AutoSuggestInput({
           }
         }
       } else {
-        // Static mode: filter in-memory list
         setSuggestions(filterLocal(text));
       }
     }, debounceMs);

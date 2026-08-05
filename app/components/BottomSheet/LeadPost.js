@@ -114,7 +114,7 @@ const LeadPost = (props) => {
                     selectItems={getStatus().map((item) => item.label)}
                     defaultValue={'Lead Status'}
                     value={statusValue}
-                    setStatusValue={handleStatusChange}
+                    setValue={handleStatusChange}
                 />
             </View>
 
